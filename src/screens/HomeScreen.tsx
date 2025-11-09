@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, Pressable, Image, ScrollView, ImageBackground } from 'react-native';
-import React from 'react';
+import React, { useState,useMemo } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MenuItem } from '../../App'; 
+
 
 
 const LOCAL_FOOD_IMAGES = [
@@ -57,13 +58,13 @@ const COLORS = {
     TEXT: 'black',
 };
 
-// --- PROPS INTERFACE ---
+// PROPS INTERFACE 
 interface HomeScreenProps {
     navigation: any;
     menuItems: MenuItem[]; 
 }
 
-// --- DISH DISPLAY COMPONENT ---
+// DISH DISPLAY COMPONENT 
 const DishItem = ({ dish }: { dish: MenuItem }) => (
     <View style={dishStyles.itemContainer}>
         
@@ -76,13 +77,13 @@ const DishItem = ({ dish }: { dish: MenuItem }) => (
 
         <View style={dishStyles.infoContainer}> 
       
-            {/* Ligne 1 : Nom, Catégorie et Prix sur la MÊME ligne */}
+            {/* name,price and category */}
             <View style={dishStyles.nameAndPriceContainer}>
                 <Text style={dishStyles.name}>{dish.name} ({dish.category})</Text>
                 <Text style={dishStyles.price}>R {dish.price.toFixed(2)}</Text>
             </View>
 
-            {/* Ligne 2 : AJOUT DE LA DESCRIPTION (sous le nom/prix) */}
+            {/*description */}
             {dish.description && dish.description.trim() !== 'No description provided.' && (
                 <Text style={dishStyles.description}>{dish.description}</Text>
             )}
@@ -93,7 +94,42 @@ const DishItem = ({ dish }: { dish: MenuItem }) => (
 );
 
 
+
+
+
 export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) { 
+
+    //  Use useMemo to efficiently calculate the average price by category,
+    //  ensuring the logic only re-runs when the list of menu items changes
+    
+    const averages = useMemo(() => {
+    // Create an empty object to store totals and counts for each category
+    const categoryData: Record<string, { total: number; count: number }> = {};
+
+    //  Iterate through each dish using a forloop to group them by their category ( Starter, Main, Dessert)
+    for (const dish of menuItems) {
+        // If this category doesn't exist yet, we create it
+        if (!categoryData[dish.category]) {
+        categoryData[dish.category] = { total: 0, count: 0 };
+        }
+
+        // Add this dish’s price to the total for that category
+        categoryData[dish.category].total += dish.price;
+
+        // Increase the counter for that category
+        categoryData[dish.category].count += 1;
+    }
+
+    // Calculate the average price for each category and structure the results into an easily usable array of objects
+    const result = Object.entries(categoryData).map(([category, data]) => {
+        const averagePrice = data.total / data.count;
+        return { category, averagePrice };
+    });
+
+    // Return this array for display in the screen, and React will memorize it until the menuItems change
+    return result;
+    }, [menuItems]);
+
 
     const handleAddDish = () => {
         navigation.navigate('AddDish');
@@ -126,6 +162,22 @@ export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) {
                     
                     {/* COUNTER DISPLAY */}
                     <Text style={styles.totalCountText}>Total items: {totalItems}</Text>
+                    {/* --- DISPLAYING THE AVERAGE PRICE BY CATEGORY --- */}
+                    <View style={{ alignSelf: 'stretch', marginVertical: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: COLORS.PRIMARY }}>
+                        Average prices by category:
+                    </Text>
+
+                    {averages.length === 0 ? (
+                        <Text style={{ color: COLORS.TEXT }}>No data yet</Text>
+                    ) : (
+                        averages.map(item => (
+                        <Text key={item.category} style={{ color: COLORS.TEXT }}>
+                            {item.category}: R {item.averagePrice.toFixed(2)}
+                        </Text>
+                        ))
+                    )}
+                    </View>
 
                     {totalItems === 0 ? (
                         // Empty list
@@ -141,6 +193,10 @@ export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) {
                             ))}
                         </ScrollView>
                     )}
+
+                   
+                        
+
 
                     <Pressable
                         onPress={handleAddDish}
@@ -162,7 +218,7 @@ export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) {
     );
 }
 
-// --- GLOBAL STYLES ---
+//  GLOBAL STYLES 
 
 const styles = StyleSheet.create({
 
