@@ -41,6 +41,10 @@ export default function App() {
 
   };
 
+  const deleteDish = (id: string) => {
+  setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
+  };
+
 
 
   return (
@@ -63,7 +67,13 @@ export default function App() {
 
           {/* using a function to pass the navigation props AND our data */}
 
-          {props => <HomeScreen {...props} menuItems={menuItems} />}
+          {props => (
+            <HomeScreen
+              {...props}
+              menuItems={menuItems}
+              deleteDish={deleteDish}
+            />
+          )}
 
         </Stack.Screen>
 
@@ -78,6 +88,8 @@ export default function App() {
           options={{ title: "Add Dish" }}
 
         >
+
+
 
           {/* Using a function to pass the navigation props AND the addDish function */}
 

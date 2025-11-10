@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable, Image, ScrollView, ImageBackground } from 'react-native';
 import React, { useState,useMemo } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Alert } from 'react-native';
 import { MenuItem } from '../../App'; 
 
 
@@ -60,12 +61,14 @@ const COLORS = {
 
 // PROPS INTERFACE 
 interface HomeScreenProps {
-    navigation: any;
-    menuItems: MenuItem[]; 
+  navigation: any;
+  menuItems: MenuItem[];
+  deleteDish: (id: string) => void;
 }
 
+
 // DISH DISPLAY COMPONENT 
-const DishItem = ({ dish }: { dish: MenuItem }) => (
+const DishItem = ({ dish, onDelete }: { dish: MenuItem; onDelete: (id: string) => void }) => (
     <View style={dishStyles.itemContainer}>
         
         {dish.imageIndex !== undefined && (
@@ -89,7 +92,22 @@ const DishItem = ({ dish }: { dish: MenuItem }) => (
             )}
       
         </View>
-        
+
+        {/*Delete button */}
+        <Pressable 
+            onPress={() => {
+                const dishName = dish.name;
+                onDelete(dish.id);
+                Alert.alert('Dish removed', `${dishName} has been successfully removed from the menu`);
+            }} 
+            style={({ pressed }) => [
+                dishStyles.deleteButton,
+                pressed && dishStyles.deleteButtonPressed
+            ]}
+        >
+            <MaterialCommunityIcons name="delete" size={24} color="#0C3853" />
+        </Pressable>
+                
     </View>
 );
 
@@ -97,7 +115,8 @@ const DishItem = ({ dish }: { dish: MenuItem }) => (
 
 
 
-export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) { 
+export default function HomeScreen({ navigation, menuItems, deleteDish }: HomeScreenProps) {
+
 
     //  Use useMemo to efficiently calculate the average price by category,
     //  ensuring the logic only re-runs when the list of menu items changes
@@ -189,7 +208,11 @@ export default function HomeScreen({ navigation, menuItems }: HomeScreenProps) {
                         // Displaying the list of dishes
                         <ScrollView style={styles.listContainer}>
                             {menuItems.map(dish => (
-                                <DishItem key={dish.id} dish={dish} /> 
+                                <DishItem 
+                                    key={dish.id} 
+                                    dish={dish} 
+                                    onDelete={deleteDish}  // Assurez-vous que deleteDish est bien défini
+                                />
                             ))}
                         </ScrollView>
                     )}
@@ -391,6 +414,24 @@ const dishStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: COLORS.PRIMARY,
-    }
+    },
+ //styles for delete button
+    deleteButton: {
+    padding: 6,
+    borderRadius: 20,
+    // borderWidth: 1,
+    borderColor: '#124559',
+    justifyContent: 'center',
+    alignItems: 'center',
+    },
+
+    deleteButtonPressed: {
+    backgroundColor: '#FDECEC', 
+    },
+
 
 });
+
+
+
+
