@@ -15,6 +15,7 @@ export interface MenuItem {
   price: number;
   category: string;
   imageIndex?: number;
+  ingredients?: string[];
 }
 
 

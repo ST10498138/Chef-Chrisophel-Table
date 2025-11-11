@@ -90,6 +90,16 @@ const DishItem = ({ dish, onDelete }: { dish: MenuItem; onDelete: (id: string) =
             {dish.description && dish.description.trim() !== 'No description provided.' && (
                 <Text style={dishStyles.description}>{dish.description}</Text>
             )}
+
+            {/* Displaying ingredients */}
+            {dish.ingredients && dish.ingredients.length > 0 && (
+                <View style={dishStyles.ingredientsContainer}>
+                    <Text style={dishStyles.ingredientsLabel}>Ingredients: </Text>
+                    <Text style={dishStyles.ingredientsText}>
+                        {dish.ingredients.join(', ')}
+                    </Text>
+                </View>
+            )}
       
         </View>
 
@@ -350,6 +360,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
 
+    
+
+
+
 });
 
 // STYLES FOR LIST ITEMS 
@@ -428,6 +442,26 @@ const dishStyles = StyleSheet.create({
     deleteButtonPressed: {
     backgroundColor: '#FDECEC', 
     },
+
+    ingredientsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 5,
+        alignItems: 'center',
+    },
+    
+    ingredientsLabel: {
+        fontSize: 11,
+        fontWeight: '600',
+        color: COLORS.ACCENT,
+    },
+    
+    ingredientsText: {
+        fontSize: 11,
+        color: COLORS.FOOTER,
+        flexShrink: 1,
+    },
+
 
 
 });

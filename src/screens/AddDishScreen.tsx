@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { Ionicons } from "@expo/vector-icons";
 import uuid from 'react-native-uuid'; 
 import { MenuItem } from '../../App'; 
 
@@ -58,6 +59,8 @@ const HeaderIcon = require('../../assets/pexels-reneterp-2544829.jpg');
 // categories
 const COURSES = ['Starter', 'Main', 'Dessert', 'Drink', 'Special'];
 
+const INGREDIENT_OPTIONS = ["Tomato", "Mozzarella", "Chicken", "Basil"] as const;
+
 // colors
 const COLORS = {
     PRIMARY: '#124559',
@@ -95,12 +98,27 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null); 
     
     const [imageIndex, setImageIndex] = useState<number | null>(null); 
+    // State for selected ingredients
+    const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
+
+    // To manage ingredient selection
+   const toggleIngredient = (ingredient: string) => {
+    setSelectedIngredients(prev => {
+        //If the ingredient is already selected, it is removed
+        if (prev.includes(ingredient)) {
+            return prev.filter(ing => ing !== ingredient);
+        }
+        // Otherwise, we simply add it
+        return [...prev, ingredient];
+    });
+};
 
     // Function to reset the form
     const clearInputs = () => {
         setDish({ name: '', description: '', price: '' });
         setSelectedCourse(null);
-        setImageIndex(null); 
+        setImageIndex(null);
+        setSelectedIngredients([]); 
     };
     
     // Validation + Addition logic
@@ -133,6 +151,8 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
             category: selectedCourse,
             // Adds the imageIndex if it exists
             ...(imageIndex !== null && { imageIndex: imageIndex }), 
+            // select ingredients
+            ...(selectedIngredients.length > 0 && { ingredients: selectedIngredients }), 
         };
 
         // Add to List and Clean Up
@@ -237,6 +257,40 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
                                 <CourseChip key={course} course={course} />
                             ))}
                         </View>
+
+                        {/* Ingredients section */}
+                        <Text style={styles.label}>Select up to 4 Ingredients</Text>
+                        <View style={styles.chipsContainer}>
+                            {INGREDIENT_OPTIONS.map((ing) => {
+                                const active = selectedIngredients.includes(ing);
+                                
+                                return (
+                                    <Pressable
+                                        key={ing}
+                                        onPress={() => toggleIngredient(ing)}
+                                        style={[
+                                            styles.chip,
+                                            active ? styles.chipSelected : styles.chipNotSelected
+                                        ]}
+                                    >
+                                        <Ionicons
+                                            name={active ? "checkbox" : "square-outline"}
+                                            size={18}
+                                            color={active ? "white" : COLORS.ACCENT}
+                                            style={{ marginRight: 6 }}
+                                        />
+                                        <Text style={[
+                                            styles.chipText,
+                                            active ? styles.chipTextSelected : styles.chipTextNotSelected
+                                        ]}>
+                                            {ing}
+                                        </Text>
+                                    </Pressable>
+                                );
+                            })}
+                        </View>
+
+                        
 
                         {/* ADD IMAGE BUTTON */}
                         <Pressable 
@@ -458,6 +512,12 @@ const styles = StyleSheet.create({
 
     cancelButton: {
         backgroundColor: COLORS.DANGER,
+    },
+    ingredientCount: {
+        fontSize: 14,
+        color: COLORS.ACCENT,
+        fontStyle: 'italic',
+        marginTop: 5,
     },
 
 });
