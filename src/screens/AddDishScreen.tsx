@@ -57,7 +57,7 @@ const BgImage = require('../../assets/pexels-brettjordan-825661.jpg');
 const HeaderIcon = require('../../assets/pexels-reneterp-2544829.jpg');
 
 // categories
-const COURSES = ['Starter', 'Main', 'Dessert', 'Drink', 'Special'];
+const COURSES = ['Starter', 'Main', 'Dessert'];
 
 const INGREDIENT_OPTIONS = ["Tomato", "Mozzarella", "Chicken", "Basil"] as const;
 
