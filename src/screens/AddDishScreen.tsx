@@ -16,7 +16,7 @@ import uuid from 'react-native-uuid';
 import { MenuItem } from '../../App'; 
 
 // --- LOCAL FOOD IMAGES ---
-
+// A list of local images that can be used for dishes.
 const LOCAL_FOOD_IMAGES = [
     require('../../assets/pexels-brettjordan-825661.jpg'), 
     require('../../assets/pexels-dzeninalukac-1583884.jpg'),
@@ -52,16 +52,16 @@ const LOCAL_FOOD_IMAGES = [
     require('../../assets/pexels-valeriya-1251210.jpg'),
 ];
 
-// bg image
+// Default background and header images
 const BgImage = require('../../assets/pexels-brettjordan-825661.jpg');
 const HeaderIcon = require('../../assets/pexels-reneterp-2544829.jpg');
 
-// categories
+// Possible categories for a dish
 const COURSES = ['Starter', 'Main', 'Dessert'];
 
 const INGREDIENT_OPTIONS = ["Tomato", "Mozzarella", "Chicken", "Basil"] as const;
 
-// colors
+// Color palette used throughout the screen
 const COLORS = {
     PRIMARY: '#124559',
     SECONDARY: '#0C3853',
@@ -73,7 +73,7 @@ const COLORS = {
 };
 
 
-// Inputs form
+// The shape of the form data for a new dish
 interface DishFormData {
     name: string;
     description: string;
@@ -88,16 +88,19 @@ interface AddDishScreenProps {
 
 
 export default function AddDishScreen({ navigation, addDish }: AddDishScreenProps) { 
-    
+     // Stores the values entered by the user in the form
     const [dish, setDish] = useState<DishFormData>({
         name: '',
         description: '',
         price: '',
     });
 
+    // Tracks which course (Starter, Main, Dessert) is currently selected
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null); 
-    
+
+   // Keeps track of the chosen image index from the local image list 
     const [imageIndex, setImageIndex] = useState<number | null>(null); 
+    
     // State for selected ingredients
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 
@@ -121,7 +124,7 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
         setSelectedIngredients([]); 
     };
     
-    // Validation + Addition logic
+    // Validation and Addition logic
     const handleSave = () => {
         
         // 1. Validation IF
@@ -162,6 +165,7 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
         navigation.goBack(); 
     };
 
+    // Cancels the operation and returns to the previous screen.
     const handleCancel = () => {
         clearInputs(); 
         navigation.goBack(); 
@@ -180,10 +184,14 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
     
     };
 
+
+     // Updates a single field (name, description, or price) in the form
     const handleChange = (key: keyof DishFormData, value: string) => {
         setDish(prev => ({ ...prev, [key]: value }));
     };
 
+
+    // Small reusable component for each category chip (Starter, Main, Dessert)
     const CourseChip = ({ course }: { course: string }) => {
         
         const isSelected = course === selectedCourse;

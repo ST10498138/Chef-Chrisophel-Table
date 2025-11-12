@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import HomeScreen from './src/screens/HomeScreen';
 import AddDishScreen from './src/screens/AddDishScreen';
+import FilterScreen from './src/screens/FilterScreen';
+
 
  
 // The structure of a dish in the list
@@ -96,6 +98,19 @@ export default function App() {
 
           {props => <AddDishScreen {...props} addDish={addDish} />}
 
+        </Stack.Screen>
+
+
+        <Stack.Screen
+          name="Filter"
+          
+        >
+          {props => (
+            <FilterScreen
+              {...props}
+              menuItems={menuItems}
+            />
+          )}
         </Stack.Screen>
 
       </Stack.Navigator>

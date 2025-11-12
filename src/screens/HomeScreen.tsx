@@ -4,7 +4,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
 import { MenuItem } from '../../App'; 
 
-
+// --- LOCAL FOOD IMAGES ---
+// A list of local images that can be used for dishes.
 
 const LOCAL_FOOD_IMAGES = [
     require('../../assets/pexels-brettjordan-825661.jpg'), 
@@ -106,16 +107,32 @@ const DishItem = ({ dish, onDelete }: { dish: MenuItem; onDelete: (id: string) =
         {/*Delete button */}
         <Pressable 
             onPress={() => {
-                const dishName = dish.name;
-                onDelete(dish.id);
-                Alert.alert('Dish removed', `${dishName} has been successfully removed from the menu`);
+                Alert.alert(
+                    'Remove the dish',
+                    `Do you really want to delete it? "${dish.name}" ?`,
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel'
+                        },
+                        {
+                            text: 'Supprimer',
+                            style: 'destructive',
+                            onPress: () => {
+                                onDelete(dish.id);
+                                //Confirmation message after deletion
+                                Alert.alert('Success', `${dish.name} has been removed from the menu`);
+                            }
+                        }
+                    ]
+                );
             }} 
             style={({ pressed }) => [
                 dishStyles.deleteButton,
                 pressed && dishStyles.deleteButtonPressed
             ]}
         >
-            <MaterialCommunityIcons name="delete" size={24} color="#0C3853" />
+            <MaterialCommunityIcons name="delete" size={24} color="#5E88A3" />
         </Pressable>
                 
     </View>
@@ -221,30 +238,41 @@ export default function HomeScreen({ navigation, menuItems, deleteDish }: HomeSc
                                 <DishItem 
                                     key={dish.id} 
                                     dish={dish} 
-                                    onDelete={deleteDish}  // Assurez-vous que deleteDish est bien défini
+                                    onDelete={deleteDish}  
                                 />
                             ))}
                         </ScrollView>
                     )}
 
-                   
-                        
+                    <View style={styles.buttonRow}>
+                        <Pressable
+                            onPress={handleAddDish}
+                            style={({ pressed }) => [
+                                styles.addButton,
+                                { 
+                                    opacity: pressed ? 0.8 : 1.0, 
+                                    transform: [{ scale: pressed ? 1.05 : 1.0 }],
+                                },
+                            ]}
+                        >
+                            <MaterialCommunityIcons name="plus-circle" size={20} color="white" />
+                            <Text style={styles.addButtonText}>Add dish</Text>
+                        </Pressable>
 
-
-                    <Pressable
-                        onPress={handleAddDish}
-                        
-                        style={({ pressed }) => [
-                            styles.addButton,
-                            { 
-                                opacity: pressed ? 0.8 : 1.0, 
-                                
-                                transform: [{ scale: pressed ? 1.28 : 1.0 }],
-                            },
-                        ]}
-                       >
-                        <Text style={styles.addButtonText}>Add a dish</Text>
-                    </Pressable>
+                        <Pressable
+                            onPress={() => navigation.navigate('Filter')}
+                            style={({ pressed }) => [
+                                styles.filterButton,
+                                { 
+                                    opacity: pressed ? 0.8 : 1.0, 
+                                    transform: [{ scale: pressed ? 1.05 : 1.0 }],
+                                },
+                            ]}
+                        >
+                            <MaterialCommunityIcons name="filter-variant" size={20} color="white" />
+                            <Text style={styles.filterButtonText}>Filter</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
         </ImageBackground>
@@ -347,17 +375,47 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
 
+    buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: 10,
+    },
+
     addButton: {
         backgroundColor: COLORS.PRIMARY, 
         paddingVertical: 12,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         borderRadius: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
     },
 
     addButtonText: {
         color: 'white',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
+        marginLeft: 8,
+    },
+
+    filterButton: {
+        backgroundColor: COLORS.PRIMARY,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+    },
+
+    filterButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '600',
+        marginLeft: 8,
     },
 
     
