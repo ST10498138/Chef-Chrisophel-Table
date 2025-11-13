@@ -116,7 +116,7 @@ const DishItem = ({ dish, onDelete }: { dish: MenuItem; onDelete: (id: string) =
                             style: 'cancel'
                         },
                         {
-                            text: 'Supprimer',
+                            text: 'Delete',
                             style: 'destructive',
                             onPress: () => {
                                 onDelete(dish.id);

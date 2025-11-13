@@ -127,7 +127,7 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
     // Validation and Addition logic
     const handleSave = () => {
         
-        // 1. Validation IF
+        //  Validation IF
         if (!dish.name.trim()) {
             Alert.alert("Validation Error", "The dish name is required.");
             return;
@@ -217,17 +217,18 @@ export default function AddDishScreen({ navigation, addDish }: AddDishScreenProp
         <ImageBackground source={BgImage} style={styles.backgroundImage}>
             <View style={styles.overlay}>
 
-                <ScrollView 
-                    style={styles.container} 
-                    contentContainerStyle={styles.contentContainer}
-                >
-                    {/* HEADER */}
+                {/* HEADER */}
                     <View style={styles.header}>
                         <Image source={HeaderIcon} style={styles.headerIcon} />
                         <Text style={styles.headerTitle}>At Chef Christophel's table</Text>
                     </View>
 
                     <Text style={styles.screenTitle}>Add a dish</Text>
+
+                <ScrollView 
+                    style={styles.container} 
+                    contentContainerStyle={styles.contentContainer}
+                >
 
                     {/* FORM */}
                     <View style={styles.formContainer}>
